@@ -1,5 +1,4 @@
 var jwt = require('jsonwebtoken');
-// const secret = 'secrete-key-api-2023';
 const conn = require('../configuration/db_conention')
 const bcrypt = require('bcrypt');
 // const saltRounds = 10;
@@ -9,7 +8,7 @@ exports.login = (req, res, next) => {
     let password = req.body.password;
 
      //Protect SQL injection
-     conn.execute('SELECT * FROM users WHERE email = ?', 
+     conn.execute('SELECT * FROM users WHERE urole = 1 AND  email = ?', 
      [email], 
      (err, users, fields) => {
        if(err) {
@@ -26,25 +25,6 @@ exports.login = (req, res, next) => {
          })
          return
        }
-
-        // Test
-        /*
-        bcrypt.compare(password, users[0].password, function(err, isLogin) {
-            console.log(users)
-            console.log(isLogin)
-            if(isLogin){
-                res.json({
-                    status: "Success",
-                    message: "login success"
-                  })
-            } else {
-                res.json({
-                    status: "Error",
-                    message: "login failed"
-                  })
-            }
-        });
-        */
        
         //Promise 
         bcrypt.compare(req.body.password, users[0].password).then(function(isLogin) {
@@ -53,13 +33,13 @@ exports.login = (req, res, next) => {
             if(isLogin){
               var token = jwt.sign({ email: users[0].email }, process.env.SECRET, { expiresIn: '1h' }, { algorithms: ['HS256'] });
                 res.json({
-                    status: "Success",
+                    status: "success",
                     message: "login success",
                     token: token
                   })
             } else {
                 res.json({
-                    status: "Error",
+                    status: "error",
                     message: "login failed"
                   })
             }

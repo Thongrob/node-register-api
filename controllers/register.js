@@ -24,7 +24,7 @@ exports.register = (req, res, next) => {
           return
         }
         res.json({
-          status: "success",
+          status: "Successful",
           data: results
         })
       }
